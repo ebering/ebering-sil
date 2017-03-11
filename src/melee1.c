@@ -96,7 +96,7 @@ extern int protection_roll(int typ, bool melee)
 	
 	// armour:
 	
-	for (i = INVEN_WIELD; i < INVEN_TOTAL; i++)
+	for (i = INVEN_WIELD; i < INVEN_QUIVER1; i++)
 	{
 		o_ptr = &inventory[i];
         
@@ -169,7 +169,7 @@ extern int p_min(int typ, bool melee)
 	
 	// armour:
 	
-	for (i = INVEN_WIELD; i < INVEN_TOTAL; i++)
+	for (i = INVEN_WIELD; i < INVEN_QUIVER1; i++)
 	{
 		o_ptr = &inventory[i];
         
@@ -240,7 +240,7 @@ extern int p_max(int typ, bool melee)
 	
 	// armour:
 	
-	for (i = INVEN_WIELD; i < INVEN_TOTAL; i++)
+	for (i = INVEN_WIELD; i < INVEN_QUIVER1; i++)
 	{
 		o_ptr = &inventory[i];
         

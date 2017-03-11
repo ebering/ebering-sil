@@ -1738,8 +1738,8 @@ void calc_torch(void)
 	/* Assume no light */
 	p_ptr->cur_light = 0;
 	
-	/* Loop through all wielded items */
-	for (i = INVEN_WIELD; i < INVEN_TOTAL; i++)
+	/* Loop through all wielded items. Quivers don't count. */
+	for (i = INVEN_WIELD; i < INVEN_QUIVER1; i++)
 	{
 		o_ptr = &inventory[i];
 	
@@ -2200,8 +2200,8 @@ static void calc_bonuses(void)
 
 	/*** Analyze equipment ***/
 
-	/* Scan the equipment */
-	for (i = INVEN_WIELD; i < INVEN_TOTAL; i++)
+	/* Scan the equipment. Quivers are like pack slots. */
+	for (i = INVEN_WIELD; i < INVEN_QUIVER1; i++)
 	{
 		o_ptr = &inventory[i];
 

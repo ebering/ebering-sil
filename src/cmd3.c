@@ -26,7 +26,13 @@ static bool item_tester_hook_wear(const object_type *o_ptr)
 	return (FALSE);
 }
 
-
+/*
+ * The "quiverable" tester
+ */
+static bool item_tester_hook_quiver(const object_type *o_ptr)
+{
+	return (o_ptr->tval == TV_ARROW) || (k_info[o_ptr->k_idx].flags3 & TR3_THROWING);
+}
 
 /*
  * Use an item, a unified 'use' command.
@@ -294,6 +300,8 @@ void do_cmd_wield(object_type *default_o_ptr, int default_item)
 	bool grants_two_weapon = FALSE;
 	
 	char o_name[80];
+
+	bool into_quiver = FALSE;
 	
 	bool combine = FALSE;
 	
@@ -358,27 +366,41 @@ void do_cmd_wield(object_type *default_o_ptr, int default_item)
 		if (!get_item(&slot, q, s, USE_EQUIP)) return;
 	}
 
-	// Special cases for merging arrows
-	if (object_similar(&inventory[INVEN_QUIVER1], o_ptr))
+	/* Ask to quiver throwables */
+	into_quiver = (o_ptr->tval == TV_ARROW); /* and always quiver arrows */
+	if(k_info[o_ptr->k_idx].flags3 & (TR3_THROWING))
+	{
+		if(get_check("Quiver for throwing? "))
+		{
+			if(!inventory[INVEN_QUIVER2].k_idx && inventory[INVEN_QUIVER1].k_idx)
+				slot = INVEN_QUIVER2;
+			else
+				slot = INVEN_QUIVER1;
+			into_quiver = TRUE;
+		}
+	}
+
+	// Special cases for merging already quivered items
+	if (into_quiver && object_similar(&inventory[INVEN_QUIVER1], o_ptr))
 	{
 		slot = INVEN_QUIVER1;
 		combine = TRUE;
 	}
-	else if (object_similar(&inventory[INVEN_QUIVER2], o_ptr))
+	else if (into_quiver && object_similar(&inventory[INVEN_QUIVER2], o_ptr))
 	{
 		slot = INVEN_QUIVER2;
 		combine = TRUE;
 	}
 	/* Ask for arrow set to replace */
-	else if ((o_ptr->tval == TV_ARROW) && inventory[INVEN_QUIVER1].k_idx && inventory[INVEN_QUIVER2].k_idx)
+	else if (into_quiver && inventory[INVEN_QUIVER1].k_idx && inventory[INVEN_QUIVER2].k_idx)
 	{
 		/* Restrict the choices */
-		item_tester_tval = TV_ARROW;
+		item_tester_hook = item_tester_hook_quiver;
 		
-		/* Choose a set of arrows from the equipment only */
-		q = "Replace which set of arrows? ";
+		/* Choose a quiver */
+		q = "Replace which quiver? ";
 		s = "Oops.";
-		if (!get_item(&slot, q, s, USE_EQUIP)) return;
+		if (!get_item(&slot, q, s, USE_EQUIP | USE_QUIVER)) return;
 	}
 	
 	// Ask about two weapon fighting if necessary
@@ -390,7 +412,8 @@ void do_cmd_wield(object_type *default_o_ptr, int default_item)
 		}
 	}
 	if ((p_ptr->active_ability[S_MEL][MEL_TWO_WEAPON] || grants_two_weapon) && 
-	    ((o_ptr->tval == TV_SWORD) || (o_ptr->tval == TV_POLEARM) || (o_ptr->tval == TV_HAFTED) || (o_ptr->tval == TV_DIGGING)))
+	    ((o_ptr->tval == TV_SWORD) || (o_ptr->tval == TV_POLEARM) || (o_ptr->tval == TV_HAFTED) || (o_ptr->tval == TV_DIGGING)) &&
+	    !into_quiver)
 	{
 		if (!(k_info[o_ptr->k_idx].flags3 & (TR3_TWO_HANDED)) && !(k_info[o_ptr->k_idx].flags3 & (TR3_HAND_AND_A_HALF)))
 		{
@@ -401,8 +424,8 @@ void do_cmd_wield(object_type *default_o_ptr, int default_item)
 		}
 	}
 	
-	/* Prevent wielding into a cursed slot */
-	if (cursed_p(&inventory[slot]))
+	/* Prevent wielding into a cursed slot (quivers exempt) */
+	if (cursed_p(&inventory[slot]) && (slot != INVEN_QUIVER1 || slot != INVEN_QUIVER2))
 	{
 		/* Describe it */
 		object_desc(o_name, sizeof(o_name), &inventory[slot], FALSE, 0);
@@ -515,8 +538,8 @@ void do_cmd_wield(object_type *default_o_ptr, int default_item)
 	/* Obtain local object */
 	object_copy(i_ptr, o_ptr);
 	
-	// Handle quantity differently for arrows
-	if (i_ptr->tval == TV_ARROW)
+	// Handle quantity differently for quivering
+	if (into_quiver)
 	{
 		if (combine)	quantity = MIN(o_ptr->number, MAX_STACK_SIZE - 1 - (&inventory[slot])->number);
 		else			quantity = o_ptr->number;
@@ -632,7 +655,7 @@ void do_cmd_wield(object_type *default_o_ptr, int default_item)
 	}
 	
 	/* Cursed! */
-	if (cursed_p(o_ptr))
+	if (cursed_p(o_ptr) && !into_quiver)
 	{
 		/* Warn the player */
 		msg_print("You have a bad feeling about this...");
@@ -657,15 +680,18 @@ void do_cmd_wield(object_type *default_o_ptr, int default_item)
 				   o_name);
 	}
 	
-	ident_on_wield(o_ptr);
+	if(!into_quiver) ident_on_wield(o_ptr);
 	
-	// activate all of its new abilities
-	for (i = 0; i < o_ptr->abilities; i++)
+	/* activate all of its new abilities if it's not in the quiver */
+	if(!into_quiver)
 	{
-		if (!p_ptr->have_ability[o_ptr->skilltype[i]][o_ptr->abilitynum[i]])
+		for (i = 0; i < o_ptr->abilities; i++)
 		{
-			p_ptr->have_ability[o_ptr->skilltype[i]][o_ptr->abilitynum[i]] = TRUE;
-			p_ptr->active_ability[o_ptr->skilltype[i]][o_ptr->abilitynum[i]] = TRUE;
+			if (!p_ptr->have_ability[o_ptr->skilltype[i]][o_ptr->abilitynum[i]])
+			{
+				p_ptr->have_ability[o_ptr->skilltype[i]][o_ptr->abilitynum[i]] = TRUE;
+				p_ptr->active_ability[o_ptr->skilltype[i]][o_ptr->abilitynum[i]] = TRUE;
+			}
 		}
 	}
 	

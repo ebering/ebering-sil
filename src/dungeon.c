@@ -1105,31 +1105,24 @@ static void process_command(void)
 			break;
 		}
 
-		/* Fire an arrow from the 1st quiver */
+		/* Fire from the 1st quiver */
 		case 'f':
 		{
-			do_cmd_fire(1);
+			do_cmd_launch(1);
 			break;
 		}
 
-		/* Fire an arrow from the 2nd quiver */
+		/* Fire from the 2nd quiver */
 		case 'F':
 		{
-			do_cmd_fire(2);
+			do_cmd_launch(2);
 			break;
 		}
 			
 		/* Throw an item */
 		case 't':
 		{
-			do_cmd_throw(FALSE);
-			break;
-		}
-
-        /* Throw an automatically chosen item at nearest target */
-		case KTRL('T'):
-		{
-			do_cmd_throw(TRUE);
+			do_cmd_throw(0);
 			break;
 		}
 

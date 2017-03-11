@@ -2584,6 +2584,9 @@ bool get_item(int *cp, cptr pmt, cptr str, int mode)
 	bool use_inven = ((mode & (USE_INVEN)) ? TRUE : FALSE);
 	bool use_equip = ((mode & (USE_EQUIP)) ? TRUE : FALSE);
 	bool use_floor = ((mode & (USE_FLOOR)) ? TRUE : FALSE);
+	bool use_quive = ((mode & (USE_QUIVER))? TRUE : FALSE);
+	/* Hack, quiver is a subset of equip */
+	use_equip = use_equip || use_quive;
 
 	bool allow_inven = FALSE;
 	bool allow_equip = FALSE;
@@ -2658,6 +2661,9 @@ bool get_item(int *cp, cptr pmt, cptr str, int mode)
 
 	/* Forbid equipment */
 	if (!use_equip) e2 = -1;
+
+	/* Force quiver only */
+	if (use_quive) e1 = INVEN_QUIVER1;
 
 	/* Restrict equipment indexes */
 	while ((e1 <= e2) && (!get_item_okay(e1))) e1++;

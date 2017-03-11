@@ -4560,11 +4560,11 @@ bool inven_carry_okay(const object_type *o_ptr)
 	}
 
 	// Check for combining in quiver first
-	if (o_ptr->tval == TV_ARROW)
+	if ((o_ptr->tval == TV_ARROW) || (k_info[o_ptr->k_idx].flags3 & TR3_THROWING))
 	{
 		int empty_quiver = 0;
 		
-		// arrows combine with similar arrows
+		// throwables combine with similar throwables
 		for (j = INVEN_QUIVER1; j <= INVEN_QUIVER2; j++)
 		{
 			object_type *j_ptr = &inventory[j];
@@ -4584,7 +4584,7 @@ bool inven_carry_okay(const object_type *o_ptr)
 			}
 		}
 		
-		// arrows that have been fired can also fit back into an empty quiver slot
+		// throwables that have been fired can also fit back into an empty quiver slot
 		if ((empty_quiver > 0) && o_ptr->pickup)
 		{
 			return (TRUE);
@@ -4626,7 +4626,7 @@ s16b inven_carry(object_type *o_ptr)
 	if (!o_ptr->k_idx) return (-1);
 
 	// Check for combining in quiver first
-	if (o_ptr->tval == TV_ARROW)
+	if ((o_ptr->tval == TV_ARROW) || (k_info[o_ptr->k_idx].flags3 & TR3_THROWING))
 	{
 		int empty_quiver = 0;
 				
@@ -4662,7 +4662,7 @@ s16b inven_carry(object_type *o_ptr)
 					char j_name[80];
 					
 					// combination message
-					msg_print("You combine them with the arrows in your quiver.");
+					msg_print("You combine them with those in your quiver.");
 
 					/* Describe the object */
 					object_desc(j_name, sizeof(j_name), j_ptr, TRUE, 3);
@@ -4673,7 +4673,8 @@ s16b inven_carry(object_type *o_ptr)
 			}
 		}
 		
-		// arrows that have been fired can also fit back into an empty quiver slot
+		/* thrown can also fit back into an empty quiver slot; XXX
+		 * re-promts quiver for throw */
 		if ((empty_quiver > 0) && o_ptr->pickup)
 		{
 			o_ptr->pickup = FALSE;

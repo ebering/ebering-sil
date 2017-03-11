@@ -1,3 +1,13 @@
+- ebering-sil 1.3 --------------------------------------------------------------------------------------
+
+- Based on mpa-sil (which doesn't keep this file up-to date)
+
+- throwing
+	- throwable items can be placed in the quiver in place of arrows and
+	  thrown with f/F
+	- throwable items held this way don't count as wielded for granting
+	  passives and abilities.
+
 - Sil 1.3 ----------------------------------------------------------------------------------------------
 
 - broke savefile compatibility

@@ -1362,8 +1362,8 @@ extern void ident_resist(u32b flag)
 	object_type *o_ptr;
 	object_kind *k_ptr;
 		
-	/* Scan the equipment */
-	for (i = INVEN_WIELD; i < INVEN_TOTAL; i++)
+	/* Scan the equipment, quivered items don't give resists */
+	for (i = INVEN_WIELD; i < INVEN_QUIVER1; i++)
 	{
 		o_ptr = &inventory[i];
 		k_ptr = &k_info[o_ptr->k_idx];
@@ -1507,8 +1507,8 @@ extern void ident_passive(void)
 	
 	object_type *o_ptr;
 		
-	/* Scan the equipment */
-	for (i = INVEN_WIELD; i < INVEN_TOTAL; i++)
+	/* Scan the equipment. Quivered items don't give passives */
+	for (i = INVEN_WIELD; i < INVEN_QUIVER1; i++)
 	{
 		o_ptr = &inventory[i];
 		
@@ -1574,8 +1574,8 @@ extern void ident_see_invisible(const monster_type *m_ptr)
 	
 	object_type *o_ptr;
 	
-	/* Scan the equipment */
-	for (i = INVEN_WIELD; i < INVEN_TOTAL; i++)
+	/* Scan the equipment. Quivered items don't grant see invis*/
+	for (i = INVEN_WIELD; i < INVEN_QUIVER1; i++)
 	{
 		o_ptr = &inventory[i];
 		
@@ -1631,8 +1631,8 @@ extern void ident_haunted(void)
 	
 	object_type *o_ptr;
 	
-	/* Scan the equipment */
-	for (i = INVEN_WIELD; i < INVEN_TOTAL; i++)
+	/* Scan the equipment. Quivered items don't activate haunts */
+	for (i = INVEN_WIELD; i < INVEN_QUIVER1; i++)
 	{
 		o_ptr = &inventory[i];
 		
@@ -1686,8 +1686,8 @@ extern void ident_cowardice(void)
 	
 	object_type *o_ptr;
 		
-	/* Scan the equipment */
-	for (i = INVEN_WIELD; i < INVEN_TOTAL; i++)
+	/* Scan the equipment. Quivered items don't induce fear */
+	for (i = INVEN_WIELD; i < INVEN_QUIVER1; i++)
 	{
 		o_ptr = &inventory[i];
 		
@@ -1738,8 +1738,8 @@ void ident_hunger(void)
 	char o_short_name[80];
 	object_type *o_ptr;
     
-	/* Scan the equipment */
-	for (i = INVEN_WIELD; i < INVEN_TOTAL; i++)
+	/* Scan the equipment. Quivered items don't hunger. */
+	for (i = INVEN_WIELD; i < INVEN_QUIVER1; i++)
 	{
 		o_ptr = &inventory[i];
 

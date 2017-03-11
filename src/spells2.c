@@ -363,7 +363,7 @@ void self_knowledge(void)
 	char t[100][80];
     bool good[100];
     
-    bool identify[INVEN_TOTAL];
+    bool identify[INVEN_QUIVER1];
     
     int level;
     
@@ -380,7 +380,7 @@ void self_knowledge(void)
     }
     
     // initialise the identification array
-    for (i = 0; i < INVEN_TOTAL; i++)
+    for (i = 0; i < INVEN_QUIVER1; i++)
     {
         identify[i] = FALSE;
     }
@@ -389,7 +389,7 @@ void self_knowledge(void)
     i = 0;
     
 	/* Get item flags from equipment */
-	for (k = INVEN_WIELD; k < INVEN_TOTAL; k++)
+	for (k = INVEN_WIELD; k < INVEN_QUIVER1; k++)
 	{
 		u32b t1, t2, t3;
 
@@ -1246,7 +1246,7 @@ void self_knowledge(void)
 	screen_load();
     
     // identify the items that are now obvious
-    for (i = 0; i < INVEN_TOTAL; i++)
+    for (i = 0; i < INVEN_QUIVER1; i++)
     {
         char o_short_name[80];
         char o_full_name[80];

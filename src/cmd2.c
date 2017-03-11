@@ -3313,6 +3313,52 @@ void attacks_of_opportunity(int neutralized_y, int neutralized_x)
 }
 
 /*
+ * Dispatch firing from a quiver based on whether an arrow or a throwable is
+ * quivered.
+ */
+void do_cmd_launch(int quiver)
+{
+	object_type *o_ptr;
+
+	if (quiver == 1)
+	{
+		o_ptr = &inventory[INVEN_QUIVER1];
+		
+		if (!o_ptr->k_idx)
+		{
+			msg_print("You have nothing in your 1st quiver.");
+			return;
+		}
+		if (o_ptr->tval == TV_ARROW)
+		{
+			do_cmd_fire(1);
+		}
+		else
+		{
+			do_cmd_throw(1);
+		}
+	}
+	else 
+	{
+		o_ptr = &inventory[INVEN_QUIVER2];
+		
+		if (!o_ptr->k_idx)
+		{
+			msg_print("You have nothing in your 2nd quiver.");
+			return;
+		}
+		if (o_ptr->tval == TV_ARROW)
+		{
+			do_cmd_fire(2);
+		}
+		else
+		{
+			do_cmd_throw(2);
+		}
+	}
+}
+
+/*
  * Fire an object from the pack or floor.
  *
  * See "calc_bonuses()" for more calculations and such.
@@ -3926,8 +3972,10 @@ void do_cmd_fire(int quiver)
  * Should throwing a weapon do full damage?  Should it allow the magic
  * to hit bonus of the weapon to have an effect?  Should it ever cause
  * the item to be destroyed?  Should it do any damage at all?
+ *
+ * Thrown from specified quiver, with "select item" if the quiver is zero
  */
-void do_cmd_throw(bool automatic)
+void do_cmd_throw(int quiver)
 {
 	int dir, item;
 	int i, j, y, x, ty, tx;
@@ -3971,43 +4019,35 @@ void do_cmd_throw(bool automatic)
 
 	u32b noticed_flag = 0;	// if a slay is noticed it is recorded here and the item identified
 
-    if (automatic)
-    {
-        bool found = FALSE;
-     
-        /* Scan the inventory */
-        for (i = 0; i < INVEN_PACK; i++)
-        {
-            o_ptr = &inventory[i];
-            
-            /* Skip non-objects */
-            if (!o_ptr->k_idx) continue;
-            
-            /* Extract the item flags */
-            object_flags(o_ptr, &f1, &f2, &f3);
-            
-            if (f3 & (TR3_THROWING))
-            {
-                item = i;
-                found = TRUE;
-                break;
-            }
-        }
-        
-        if (!found)
-        {
-            msg_print("You don't have anything designed for throwing in your inventory.");
-            return;
-        }
-    }
-    
-    else
-    {
-        /* Get an item */
-        q = "Throw which item? ";
-        s = "You have nothing to throw.";
-        if (!get_item(&item, q, s, (USE_INVEN | USE_FLOOR | USE_EQUIP))) return;
-    }
+	if (0 < quiver && quiver <= 2)
+	{
+		if (quiver == 1) 
+		{
+			o_ptr = &inventory[INVEN_QUIVER1];
+			item = INVEN_QUIVER1;
+		}
+		if (quiver == 2) 
+		{
+			o_ptr = &inventory[INVEN_QUIVER2];
+			item = INVEN_QUIVER2;
+		}
+
+		object_flags(o_ptr, &f1, &f2, &f3);
+
+		/* paranoia */
+		if (!(f3 & (TR3_THROWING)))
+		{
+			msg_print("BUG: The object in your quiver is not designated for throwing.");
+			return;
+		}
+	}
+	else
+	{
+		/* Get an item */
+		q = "Throw which item? ";
+		s = "You have nothing to throw.";
+		if (!get_item(&item, q, s, (USE_INVEN | USE_FLOOR | USE_EQUIP))) return;
+	}
 
 	/* Get the object */
 	if (item >= 0)
@@ -4019,8 +4059,8 @@ void do_cmd_throw(bool automatic)
 		o_ptr = &o_list[0 - item];
 	}
 
-	/* Hack -- Cannot remove cursed items */
-	if ((item >= INVEN_WIELD) && cursed_p(o_ptr))
+	/* Hack -- Cannot remove cursed items, but can quiver and throw them */
+	if ((item >= INVEN_WIELD) && cursed_p(o_ptr) && (item < INVEN_QUIVER1))
 	{
 		if (p_ptr->active_ability[S_WIL][WIL_CURSE_BREAKING])
 		{
@@ -4045,43 +4085,12 @@ void do_cmd_throw(bool automatic)
 	
 	/* Examine the item */
 	object_flags(o_ptr, &f1, &f2, &f3);
-
-    // Aim automatically if asked
-    if (automatic)
-    {
-        if (target_okay(tdis)) dir = 5;
-        
-        else
-        {
-            /* Prepare the "temp" array */
-            target_set_interactive_prepare(TARGET_KILL, tdis);
-            
-            /* Monster */
-            if (temp_n)
-            {
-                target_set_monster(cave_m_idx[temp_y[0]][temp_x[0]]);
-                health_track(cave_m_idx[temp_y[0]][temp_x[0]]);
-                dir = 5;
-            }
-            
-            else
-            {
-                msg_print("No clear target for automatic throwing.");
-                return;
-            }
-        }
-        
-        if (p_ptr->confused)
-        {
-            dir = ddd[rand_int(8)];
-        }
-    }
     
 	// Otherwise get a direction (or cancel) */
-	else if (!get_aim_dir(&dir, tdis, FALSE)) return;
+	if (!get_aim_dir(&dir, tdis, FALSE)) return;
 
 	/* Take off equipment first */
-	if (item >= INVEN_WIELD)
+	if (item >= INVEN_WIELD && item < INVEN_QUIVER1)
 	{
 		/* Take off first */
 		item = inven_takeoff(item, 1);
