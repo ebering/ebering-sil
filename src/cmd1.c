@@ -3890,24 +3890,6 @@ void py_attack_aux(int y, int x, int attack_type)
                     knocked = knock_back(p_ptr->py, p_ptr->px, y, x);
  				}
 
-				// Morgoth drops his iron crown if he is hit for 10 or more net damage twice
-				if ((m_ptr->r_idx == R_IDX_MORGOTH) && ((&a_info[ART_MORGOTH_3])->cur_num == 0))
-				{
-					if (net_dam >= 10)
-					{
-						if (p_ptr->morgoth_hits == 0)
-						{
-							msg_print("The force of your blow knocks the Iron Crown off balance.");
-							p_ptr->morgoth_hits++;
-						}
-						else if (p_ptr->morgoth_hits == 1)
-						{
-							drop_iron_crown(m_ptr, "You knock his crown from off his brow, and it falls to the ground nearby.");
-							p_ptr->morgoth_hits++;
-						}
-					}
-				}
-								
 				// Deal with cruel blow ability
 				if (p_ptr->active_ability[S_STL][STL_CRUEL_BLOW] && (crit_bonus_dice > 0) && (net_dam > 0) && !(r_ptr->flags1 & (RF1_RES_CRIT)))
 				{

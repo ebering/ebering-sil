@@ -3869,24 +3869,6 @@ void do_cmd_fire(int quiver)
 						{
 							make_alert(m_ptr);
 						}
-						
-						// Morgoth drops his iron crown if he is hit for 10 or more net damage twice
-						if ((m_ptr->r_idx == R_IDX_MORGOTH) && ((&a_info[ART_MORGOTH_3])->cur_num == 0))
-						{
-							if (net_dam >= 10)
-							{
-								if (p_ptr->morgoth_hits == 0)
-								{
-									msg_print("The force of your shot knocks the Iron Crown off balance.");
-									p_ptr->morgoth_hits++;
-								}
-								else if (p_ptr->morgoth_hits == 1)
-								{
-									drop_iron_crown(m_ptr, "You knock his crown from off his brow, and it falls to the ground nearby.");
-									p_ptr->morgoth_hits++;
-								}
-							}
-						}
 
 						/* Message */
 						message_pain(cave_m_idx[y][x], net_dam);
@@ -4420,24 +4402,6 @@ void do_cmd_throw(int quiver)
 					if (net_dam == 0)
 					{
 						make_alert(m_ptr);
-					}
-					
-					// Morgoth drops his iron crown if he is hit for 10 or more net damage twice
-					if ((m_ptr->r_idx == R_IDX_MORGOTH) && ((&a_info[ART_MORGOTH_3])->cur_num == 0))
-					{
-						if (net_dam >= 10)
-						{
-							if (p_ptr->morgoth_hits == 0)
-							{
-								msg_print("The force of your blow knocks the Iron Crown off balance.");
-								p_ptr->morgoth_hits++;
-							}
-							else if (p_ptr->morgoth_hits == 1)
-							{
-								drop_iron_crown(m_ptr, "You knock his crown from off his brow, and it falls to the ground nearby.");
-								p_ptr->morgoth_hits++;
-							}
-						}
 					}
 					
 					/* Message if applicable*/

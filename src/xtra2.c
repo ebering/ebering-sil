@@ -2421,6 +2421,25 @@ bool mon_take_hit(int m_idx, int dam, cptr note, int who)
 		set_alertness(m_ptr, MAX(m_ptr->alertness + dam, random_level + dam)); 
 	}
 
+	// Morgoth drops his iron crown if he is hit for 10 or more net damage twice
+	// by the player, in any fashion.
+	if ((who < 0) && (m_ptr->r_idx == R_IDX_MORGOTH) && ((&a_info[ART_MORGOTH_3])->cur_num == 0))
+	{
+		if (dam >= 10)
+		{
+			if (p_ptr->morgoth_hits == 0)
+			{
+				msg_print("The force knocks the Iron Crown off balance.");
+				p_ptr->morgoth_hits++;
+			}
+			else if (p_ptr->morgoth_hits == 1)
+			{
+				drop_iron_crown(m_ptr, "You knock his crown from off his brow, and it falls to the ground nearby.");
+				p_ptr->morgoth_hits++;
+			}
+		}
+	}
+
 	/* Monster will always go active */
 	m_ptr->mflag |= (MFLAG_ACTV);
 
