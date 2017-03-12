@@ -13,6 +13,10 @@
 	  player. (Tricking a Kemenrauko into earthquaking Morgoth will not
 	  work.)
 
+- items
+	- Horn of Blasting now creates an earthquake in power proportional to
+	  the player's will score, like the staff.
+
 - bugfixes
 	- Correctly apply monster protection to earthquakes.
 	- Correctly give chanelling bonus to staff of earthquakes.

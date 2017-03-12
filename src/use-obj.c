@@ -761,12 +761,13 @@ static bool play_instrument(object_type *o_ptr, bool *ident)
                     int dam = damroll(4,8);
                     int prt = protection_roll(GF_HURT, FALSE);
                     int net_dam = dam - prt;
+		    int radius = 3 + will_score / 10;
                     
                     // no negative damage
                     if (net_dam < 0) net_dam = 0;
                     
                     msg_print("The ceiling cracks and rock rains down upon you!");
-                    earthquake(p_ptr->py, p_ptr->px, -1, -1, 3, -1);
+                    earthquake(p_ptr->py, p_ptr->px, -1, -1, radius, -1);
                     
                     update_combat_rolls1b(PLAYER, PLAYER, TRUE);
                     update_combat_rolls2(4, 8, dam, -1, -1, prt, 100, GF_HURT, FALSE);
