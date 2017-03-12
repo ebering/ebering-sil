@@ -1,7 +1,5 @@
 - ebering-sil 1.3 --------------------------------------------------------------------------------------
 
-- Based on mpa-sil (which doesn't keep this file up-to date)
-
 - throwing
 	- throwable items can be placed in the quiver in place of arrows and
 	  thrown with f/F
@@ -22,6 +20,65 @@
 - bugfixes
 	- Correctly apply monster protection to earthquakes.
 	- Correctly give chanelling bonus to staff of earthquakes.
+
+- mpa-sil 1.3 ------------------------------------------------------------------------------------------
+
+- map
+	- remove map amnesia (from mewlips and traps)
+	- throne room and gates are automatically mapped on arrival
+	- stairs on the ascent cover more distance (up and down)
+
+- player
+	- always show all monster info
+	- always show all items and monsters in knowledge menu
+	- start with fixed weight sword, equipped
+	- start with a fixed number of torches
+	- player characters no longer have a sex
+
+- character dumps
+	- list abilities in a separate section
+	- list artefacts (generated and found)
+	- generated automatically on death
+	- section for killed/seen counts
+
+- abilities
+	- Lore-Keeper marks all "bad" items tainted, not just curses
+	- Song of Freedom now has no pre-requisite
+	- Song of Este has Freedom as a pre-requisite
+	- Concentration now has no pre-requisite
+
+- objects
+	- artefacts always id on sight
+	- Orcish Liquor and Miruvor always id on sight
+	- regeneration items only cause hunger when regenerating
+	- unidentified potions and herbs are auto-inscribed with depth
+	- Belegost identifies on equip
+	- Regen identifies on equip
+	- Slays identify when the item glows
+	- throwing potions have no effect
+	- healing consumables identify on use
+	- floor item weights are visible always
+	- Remove Christmas presents and Easter Eggs
+	- Herbs and potions can be used while gorged
+
+- sil cutting
+	- Cutting each Sil has a fixed difficulty of [0,15d4]
+
+- smithing
+	- Mithril can be melted in exhausted forges 
+
+- interface
+	- rage recolours the dungeon and not the monsters
+	- Y/N prompts are forced uppercase with vi keys
+	- prompt when stepping next to stationary monsters with an attack
+	- support 256-color terminals
+	- various monster and feature recolorings 
+
+- bugfixes
+	- auto player center tweaks
+	- trying to use a staff you know is empty does not cost a turn
+	- don't allow 0 turn attacks with rage/whirlwind attacks
+	- don't waste a turn picking up an item with a full inventory
 
 - Sil 1.3 ----------------------------------------------------------------------------------------------
 
