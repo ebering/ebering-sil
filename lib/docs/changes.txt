@@ -8,6 +8,15 @@
 	- throwable items held this way don't count as wielded for granting
 	  passives and abilities.
 
+- monsters
+	- Morgoth's crown can now be knocked off by earthquakes caused by the
+	  player. (Tricking a Kemenrauko into earthquaking Morgoth will not
+	  work.)
+
+- bugfixes
+	- Correctly apply monster protection to earthquakes.
+	- Correctly give chanelling bonus to staff of earthquakes.
+
 - Sil 1.3 ----------------------------------------------------------------------------------------------
 
 - broke savefile compatibility
