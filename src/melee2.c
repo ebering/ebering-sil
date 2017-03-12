@@ -4393,8 +4393,8 @@ static void process_monster(monster_type *m_ptr)
 	/* Will the monster move randomly? */
 	bool random_move = FALSE;
     
-    // assume we are not under the influence of the Song of Mastery
-    m_ptr->skip_this_turn = FALSE;
+	// assume we are not under the influence of the Song of Mastery
+	m_ptr->skip_this_turn = FALSE;
 
 	// first work out if the song of mastery stops the monster's turn
 	if (singing(SNG_MASTERY))
@@ -4405,11 +4405,27 @@ static void process_monster(monster_type *m_ptr)
 						m_ptr) > 0)
 		{
             
-            // make sure the monster doesn't do any free attacks before its next turn
-            m_ptr->skip_this_turn = TRUE;
-			
-            // end the monster's turn
-            return;
+			// make sure the monster doesn't do any free attacks before its next turn
+			m_ptr->skip_this_turn = TRUE;
+
+			/* Binding Morgoth to your will counts as a hit for
+			 * getting the crown */
+			if ((m_ptr->r_idx == R_IDX_MORGOTH) && ((&a_info[ART_MORGOTH_3])->cur_num == 0))
+			{
+				if (p_ptr->morgoth_hits == 0)
+				{
+					msg_print("Bound to your will, Morgoth's Iron Crown tips off balance.");
+					p_ptr->morgoth_hits++;
+				}
+				else if (p_ptr->morgoth_hits == 1)
+				{
+					drop_iron_crown(m_ptr, "Morgoth falters, and the Iron Crown falls to the ground nearby.");
+					p_ptr->morgoth_hits++;
+				}
+			}
+			    	
+			// end the monster's turn
+			return;
 		}
 	}
 

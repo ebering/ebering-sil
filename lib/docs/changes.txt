@@ -12,6 +12,8 @@
 	- Morgoth's crown can now be knocked off by earthquakes caused by the
 	  player. (Tricking a Kemenrauko into earthquaking Morgoth will not
 	  work.)
+	- Morgoth's crown can now be knocked off by causing him to falter with
+	  Song of Mastery
 
 - items
 	- Horn of Blasting now creates an earthquake in power proportional to
