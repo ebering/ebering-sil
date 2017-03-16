@@ -4149,7 +4149,8 @@ void do_cmd_throw(int quiver)
 
 	attack_mod = p_ptr->skill_use[S_MEL] + i_ptr->att;
 	
-	// subtract out the melee weapon's bonus (as we had already accounted for it)
+	// subtract out the melee weapon's bonus (as we had already accounted for it
+	// by checking skill_use[S_MEL])
 	attack_mod -= (&inventory[INVEN_WIELD])->att;
 	attack_mod -= blade_bonus(&inventory[INVEN_WIELD]);
 	attack_mod -= axe_bonus(&inventory[INVEN_WIELD]);
