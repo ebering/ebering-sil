@@ -24,6 +24,7 @@
 - bugfixes
 	- Correctly apply monster protection to earthquakes.
 	- Correctly give chanelling bonus to staff of earthquakes.
+	- Fix Gorthaur's song to summon the correct monster.
 
 - mpa-sil 1.3 ------------------------------------------------------------------------------------------
 
