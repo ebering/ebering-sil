@@ -17,6 +17,10 @@
 	- Horn of Blasting now creates an earthquake in power proportional to
 	  the player's will score, like the staff.
 
+- character dumps
+	- List starting skills in the notes
+	- Note reaching multiples of 5 in a skill thereafter.
+
 - bugfixes
 	- Correctly apply monster protection to earthquakes.
 	- Correctly give chanelling bonus to staff of earthquakes.

@@ -1854,6 +1854,20 @@ extern bool gain_skills(void)
 	// reset hack global variable
 	skill_gain_in_progress = FALSE;
 
+	/* Note the skill changes if we reach or pass a multiple of 5 and we're in the
+	 * game */
+	if (accepted && character_dungeon)
+	{
+		for (i = 0; i < S_MAX; i++)
+		{
+			if (old_base[i] / 5 < p_ptr->skill_base[i] / 5)
+			{
+				do_cmd_note(format("(%s: %d)", (p_ptr->skill_base[i] / 5) * 5,
+							skill_names_full[i]),p_ptr->depth);
+			}
+		}
+	}
+
 	/* Calculate the bonuses */
 	p_ptr->update |= (PU_BONUS);
 
@@ -1901,6 +1915,41 @@ static bool player_birth_aux(void)
 	return (TRUE);
 }
 
+/* Create character notes about starting skills and date */
+void log_birth()
+{
+	int i;
+	char raw_date[25];
+	char clean_date[25];
+	char month[4];
+	char spaces[12] = "            ";
+	time_t ct = time((time_t*)0);
+
+	/* Get date */
+	(void)strftime(raw_date, sizeof(raw_date), "@%Y%m%d", localtime(&ct));
+
+	sprintf(month,"%.2s", raw_date + 5);
+	atomonth(atoi(month), month);
+
+	if (*(raw_date + 7) == '0')
+		sprintf(clean_date, "%.1s %.3s %.4s", raw_date + 8, month, raw_date + 1);
+	else
+		sprintf(clean_date, "%.2s %.3s %.4s", raw_date + 7, month, raw_date + 1);
+
+	/* Add in "character start" information */
+	my_strcat(notes_buffer, format("%s of the %s\n", op_ptr->full_name, p_name + rp_ptr->name), sizeof(notes_buffer));
+	my_strcat(notes_buffer, format("Entered Angband on %s\n", clean_date), sizeof(notes_buffer));
+	my_strcat(notes_buffer, format("With the following skills:\n"),sizeof(notes_buffer));
+	/* Nicely pad the skill table */
+	for (i = 0; i < S_MAX; i++)
+	{
+		spaces[12-strlen(skill_names_full[i])-1] = '\0';
+		my_strcat(notes_buffer,format("  %s:%s%3d\n",skill_names_full[i],spaces,p_ptr->skill_base[i]),sizeof(notes_buffer));
+		spaces[12-strlen(skill_names_full[i])-1] = ' ';
+	}
+	my_strcat(notes_buffer, "\n   Turn     Depth   Note\n\n", sizeof(notes_buffer));
+}
+
 /*
  * Create a new character.
  *
@@ -1910,11 +1959,6 @@ static bool player_birth_aux(void)
 void player_birth()
 {
 	int i;
-
-	char raw_date[25];
-	char clean_date[25];
-	char month[4];
-	time_t ct = time((time_t*)0);
 	
 	/* Create a new character */
 	while (1)
@@ -1931,19 +1975,7 @@ void player_birth()
 		notes_buffer[i] = '\0';
 	}
 
-	/* Get date */
-	(void)strftime(raw_date, sizeof(raw_date), "@%Y%m%d", localtime(&ct));
-	
-	sprintf(month,"%.2s", raw_date + 5);
-	atomonth(atoi(month), month);
-	
-	if (*(raw_date + 7) == '0')		sprintf(clean_date, "%.1s %.3s %.4s", raw_date + 8, month, raw_date + 1);
-	else							sprintf(clean_date, "%.2s %.3s %.4s", raw_date + 7, month, raw_date + 1);
-	
-	/* Add in "character start" information */
-	my_strcat(notes_buffer, format("%s of the %s\n", op_ptr->full_name, p_name + rp_ptr->name), sizeof(notes_buffer));
-	my_strcat(notes_buffer, format("Entered Angband on %s\n", clean_date), sizeof(notes_buffer));
-	my_strcat(notes_buffer, "\n   Turn     Depth   Note\n\n", sizeof(notes_buffer));
+	log_birth();
 	
 	/* Note player birth in the message recall */
 	message_add(" ", MSG_GENERIC);
