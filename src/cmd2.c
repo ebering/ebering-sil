@@ -3968,6 +3968,7 @@ void do_cmd_throw(int quiver)
 	int attack_mod = 0, total_attack_mod = 0;
 	int total_evasion_mod = 0;
 	int hit_result = 0;
+	int stealth_bonus = 0;
 	int crit_bonus_dice = 0, slay_bonus_dice = 0;
 	int total_bonus_dice = 0;
 	int total_ds = 0;
@@ -4260,7 +4261,8 @@ void do_cmd_throw(int quiver)
 			bool fatal_blow = FALSE;
 
 			// Determine the player's attack score after all modifiers
-			total_attack_mod = total_player_attack(m_ptr, attack_mod);
+			stealth_bonus = stealth_melee_bonus(m_ptr);
+			total_attack_mod = total_player_attack(m_ptr, attack_mod + stealth_bonus);
 
 			/* Monsters might notice */
 			player_attacked = TRUE;
@@ -4272,12 +4274,14 @@ void do_cmd_throw(int quiver)
 				if ((ty != y) || (tx != x))
 				{
 					total_attack_mod = 0;
+					stealth_bonus = 0;
 				}
 			}
 			// if it is just a shot in a direction and has already missed something, then massively penalise
 			else if (missed_monsters > 0)
 			{
 				total_attack_mod = 0;
+				stealth_bonus = 0;
 			}
 			// if it is a shot in a direction and this is the first monster
 			else
@@ -4360,8 +4364,10 @@ void do_cmd_throw(int quiver)
 					// determine the punctuation for the attack ("...", ".", "!" etc)
 					attack_punctuation(punctuation, net_dam, crit_bonus_dice);
 					
-					/* Message */
-					msg_format("The %s hits %s%s", o_name, m_name, punctuation);
+					if(stealth_bonus)
+						msg_format("The %s hits %s unawares%s", o_name, m_name, punctuation);
+					else
+						msg_format("The %s hits %s%s", o_name, m_name, punctuation);
 					
 					/* Hack -- Track this monster race */
 					if (m_ptr->ml) monster_race_track(m_ptr->r_idx);

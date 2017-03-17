@@ -5,6 +5,7 @@
 	  thrown with f/F
 	- throwable items held this way don't count as wielded for granting
 	  passives and abilities.
+	- assassination now applies to thrown attacks
 
 - monsters
 	- Morgoth's crown can now be knocked off by earthquakes caused by the
