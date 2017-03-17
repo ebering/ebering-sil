@@ -4418,7 +4418,7 @@ void do_cmd_throw(int quiver)
 				missed_monsters++;
 			}
 
-		}		
+		}
 	}
 
 	/* Have to set this here as well, just in case... */
