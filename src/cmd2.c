@@ -3965,6 +3965,7 @@ void do_cmd_throw(int quiver)
 	int tdis;
 	u32b f1, f2, f3;
 
+	bool good_throw = FALSE; // are we using a throwing weapon?
 	int attack_mod = 0, total_attack_mod = 0;
 	int total_evasion_mod = 0;
 	int hit_result = 0;
@@ -4068,6 +4069,7 @@ void do_cmd_throw(int quiver)
 	
 	/* Examine the item */
 	object_flags(o_ptr, &f1, &f2, &f3);
+	good_throw = (f3 & TR3_THROWING) > 0;
     
 	// Otherwise get a direction (or cancel) */
 	if (!get_aim_dir(&dir, tdis, FALSE)) return;
@@ -4158,7 +4160,7 @@ void do_cmd_throw(int quiver)
 	attack_mod -= polearm_bonus(&inventory[INVEN_WIELD]);
 
 	/* Weapons that are not good for throwing are much less accurate */
-	if (!(f3 & (TR3_THROWING)))
+	if (!good_throw)
 	{
 		attack_mod -= 5;
 	}
@@ -4257,11 +4259,11 @@ void do_cmd_throw(int quiver)
 			monster_type *m_ptr = &mon_list[cave_m_idx[y][x]];
 			monster_race *r_ptr = &r_info[m_ptr->r_idx];
 						
-			int pdam = 0;
 			bool fatal_blow = FALSE;
 
 			// Determine the player's attack score after all modifiers
-			stealth_bonus = stealth_melee_bonus(m_ptr);
+			// Only get assassination when using a throwing weapon
+			stealth_bonus = good_throw ? stealth_melee_bonus(m_ptr) : 0;
 			total_attack_mod = total_player_attack(m_ptr, attack_mod + stealth_bonus);
 
 			/* Monsters might notice */
@@ -4330,7 +4332,7 @@ void do_cmd_throw(int quiver)
 				total_ds = strength_modified_ds(i_ptr, 0);
 
 				/* Penalise items that aren't made to be thrown */
-				if (!(f3 & (TR3_THROWING)))	total_ds /= 2;
+				if (!good_throw)	total_ds /= 2;
 			
 				/* Can't have a negative number of sides */
 				if (total_ds < 0) total_ds = 0;
@@ -4404,16 +4406,23 @@ void do_cmd_throw(int quiver)
 				/* Still alive */
 				if (!fatal_blow)
 				{
+					char m_name[80];
+
 					// alert the monster, even if no damage was done
 					// (if damage was done, then it was alerted by mon_take_hit() )
 					if (net_dam == 0)
 					{
 						make_alert(m_ptr);
 					}
+
+					monster_desc(m_name, sizeof(m_name), m_ptr, 0);
 					
-					/* Message if applicable*/
-					if (pdam > 0)
-						message_pain(cave_m_idx[y][x],  (pdam ? pdam : net_dam));
+					/* Deal with cruel blow (only for good
+					 * throws) and deliver the appropriate message */
+					if (good_throw && cruel_blow(m_ptr, r_ptr, net_dam, crit_bonus_dice))
+						msg_format("%^s reels in pain!", m_name);
+					else
+						message_pain(cave_m_idx[y][x],  net_dam);
 				}
 				/* Stop looking if a monster was hit */
 				break;
@@ -4435,7 +4444,7 @@ void do_cmd_throw(int quiver)
 	j = breakage_chance(i_ptr, hit_wall);
 
 	/* throwing weapons have a lesser chance */
-	if (f3 & (TR3_THROWING)) j /= 4;
+	if (good_throw) j /= 4;
 
 	/* Drop (or break) near that location */
 	drop_near(i_ptr, j, y, x);

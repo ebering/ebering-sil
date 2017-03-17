@@ -3522,6 +3522,28 @@ bool knock_back(int y1, int x1, int y2, int x2)
     return (knocked);
 }
 
+/* Handle the cruel blow ability for an attack */
+bool cruel_blow(monster_type *m_ptr, monster_race *r_ptr, int net_dam, int crit_bonus_dice)
+{
+	if (p_ptr->active_ability[S_STL][STL_CRUEL_BLOW] && (crit_bonus_dice > 0) && (net_dam > 0) && !(r_ptr->flags1 & (RF1_RES_CRIT)))
+	{
+		if (skill_check(PLAYER, crit_bonus_dice * 4, monster_skill(m_ptr, S_WIL), m_ptr) > 0)
+		{
+			// confuse the monster (if possible)
+			if (!(r_ptr->flags3 & (RF3_NO_CONF)))
+			{
+				// The +1 is needed as a turn of this wears off immediately
+				m_ptr->confused += crit_bonus_dice + 1;
+			}
+			
+			// cause a temporary morale penalty
+			scare_onlooking_friends(m_ptr, -20);
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
 /*
  * Attack the monster at the given location
  *
@@ -3887,27 +3909,12 @@ void py_attack_aux(int y, int x, int attack_type)
 				// deal with knock back ability if it triggered
 				if (do_knock_back)
 				{
-                    knocked = knock_back(p_ptr->py, p_ptr->px, y, x);
+					knocked = knock_back(p_ptr->py, p_ptr->px, y, x);
  				}
 
 				// Deal with cruel blow ability
-				if (p_ptr->active_ability[S_STL][STL_CRUEL_BLOW] && (crit_bonus_dice > 0) && (net_dam > 0) && !(r_ptr->flags1 & (RF1_RES_CRIT)))
-				{
-					if (skill_check(PLAYER, crit_bonus_dice * 4, monster_skill(m_ptr, S_WIL), m_ptr) > 0)
-					{
-						msg_format("%^s reels in pain!", m_name);
-						
-						// confuse the monster (if possible)
-						if (!(r_ptr->flags3 & (RF3_NO_CONF)))
-						{
-							// The +1 is needed as a turn of this wears off immediately
-							m_ptr->confused += crit_bonus_dice + 1;
-						}
-						
-						// cause a temporary morale penalty
-						scare_onlooking_friends(m_ptr, -20);
-					}
-				}
+				if (cruel_blow(m_ptr, r_ptr, net_dam, crit_bonus_dice))
+					msg_format("%^s reels in pain!", m_name);
 			}
 		}
 
