@@ -1862,8 +1862,8 @@ extern bool gain_skills(void)
 		{
 			if (old_base[i] / 5 < p_ptr->skill_base[i] / 5)
 			{
-				do_cmd_note(format("(%s: %d)", (p_ptr->skill_base[i] / 5) * 5,
-							skill_names_full[i]),p_ptr->depth);
+				do_cmd_note(format("(%s: %d)", skill_names_full[i],
+							(p_ptr->skill_base[i] / 5) * 5),p_ptr->depth);
 			}
 		}
 	}
