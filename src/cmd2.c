@@ -4263,7 +4263,7 @@ void do_cmd_throw(int quiver)
 
 			// Determine the player's attack score after all modifiers
 			// Only get assassination when using a throwing weapon
-			stealth_bonus = good_throw ? stealth_melee_bonus(m_ptr) : 0;
+			stealth_bonus = good_throw ? stealth_melee_bonus(m_ptr) / 2 : 0;
 			total_attack_mod = total_player_attack(m_ptr, attack_mod + stealth_bonus);
 
 			/* Monsters might notice */

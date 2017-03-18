@@ -315,8 +315,9 @@ T:36:0:99  # Soft Armour
 
 N:61:Assassination
 I:3:1:4
-D:Gives you a melee bonus against non-alert creatures
-D: equal to your stealth score.
+D:Gives you a bonus against non-alert creatures
+D: equal to your stealth score for melee attacks and half
+D: your stealth score for thrown attacks.
 T:21:0:99  # Hafted
 T:22:0:99  # Polearms
 T:23:0:99  # Swords
