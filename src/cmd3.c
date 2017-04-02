@@ -2233,9 +2233,6 @@ void do_cmd_query_symbol(void)
 		monster_race *r_ptr = &r_info[i];
 		monster_lore *l_ptr = &l_list[i];
 
-		/* Nothing to recall */
-		if (!cheat_know && !l_ptr->tsights && !p_ptr->active_ability[S_PER][PER_LORE2]) continue;
-
 		/* Require non-unique monsters if needed */
 		if (norm && (r_ptr->flags1 & (RF1_UNIQUE))) continue;
 
