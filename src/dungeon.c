@@ -876,7 +876,13 @@ static void process_command(void)
 		/* Wear/wield equipment */
 		case 'w':
 		{
-			do_cmd_wield(NULL, 0);
+			do_cmd_wield(NULL, 0, FALSE);
+			break;
+		}
+
+		case 'W':
+		{
+			do_cmd_wield(NULL, 0, TRUE);
 			break;
 		}
 

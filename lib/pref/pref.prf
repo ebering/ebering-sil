@@ -137,7 +137,7 @@ A:n
 C:1:^N
 
 A:L
-C:1:W
+C:1:v
 
 
 ##### Angband-like Keyset Mappings #####
@@ -331,7 +331,7 @@ A:n
 C:3:^N
 
 A:L
-C:3:W
+C:3:x
 
 
 # Examine
@@ -389,8 +389,6 @@ C:3:@
 # Repeat as '0' is handled internally
 
 # Remove some now unneeded commands (by assigning them to the unused 'A')
-A:A
-C:3:x
 A:A
 C:3:r
 A:A

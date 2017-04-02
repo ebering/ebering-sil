@@ -4673,12 +4673,10 @@ s16b inven_carry(object_type *o_ptr)
 			}
 		}
 		
-		/* thrown can also fit back into an empty quiver slot; XXX
-		 * re-promts quiver for throw */
 		if ((empty_quiver > 0) && o_ptr->pickup)
 		{
 			o_ptr->pickup = FALSE;
-			do_cmd_wield(o_ptr, -1);
+			do_cmd_wield(o_ptr, -1, TRUE);
 			return (-1);
 		}
 	}

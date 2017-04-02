@@ -27,6 +27,25 @@ static bool item_tester_hook_wear(const object_type *o_ptr)
 }
 
 /*
+ * The "alt-wieldable" tester
+ */
+static bool item_tester_hook_alt(const object_type *o_ptr)
+{
+	int i;
+	bool grants_two_weapon = FALSE;
+
+	for (i = 0; i < o_ptr->abilities; i++)
+	{
+		if ((o_ptr->skilltype[i] == S_MEL) && (o_ptr->abilitynum[i] == MEL_TWO_WEAPON) && object_known_p(o_ptr))
+		{
+			grants_two_weapon = TRUE;
+		}
+	}
+
+	return grants_two_weapon || (k_info[o_ptr->k_idx].flags3 & TR3_THROWING);
+}
+
+/*
  * The "quiverable" tester
  */
 static bool item_tester_hook_quiver(const object_type *o_ptr)
@@ -134,7 +153,7 @@ void do_cmd_use_item(void)
 				}
 				else if (try_to_wield)
 				{
-					do_cmd_wield(o_ptr, item);
+					do_cmd_wield(o_ptr, item, FALSE);
 				}
 			}
 			else
@@ -280,7 +299,7 @@ void do_cmd_equip(void)
 /*
  * Wield or wear a single item from the pack or floor
  */
-void do_cmd_wield(object_type *default_o_ptr, int default_item)
+void do_cmd_wield(object_type *default_o_ptr, int default_item, bool alt_slot)
 {
 	int item, slot;
 	
@@ -315,7 +334,8 @@ void do_cmd_wield(object_type *default_o_ptr, int default_item)
 	else
 	{
 		/* Restrict the choices */
-		item_tester_hook = item_tester_hook_wear;
+		item_tester_hook = alt_slot ? item_tester_hook_alt :
+			item_tester_hook_wear;
 		
 		/* Get an item */
 		q = "Wear/Wield which item? ";
@@ -348,7 +368,6 @@ void do_cmd_wield(object_type *default_o_ptr, int default_item)
 		return;
 	}
 	
-	
 	/* Check the slot */
 	slot = wield_slot(o_ptr);
 	
@@ -365,19 +384,38 @@ void do_cmd_wield(object_type *default_o_ptr, int default_item)
 		s = "Oops.";
 		if (!get_item(&slot, q, s, USE_EQUIP)) return;
 	}
+	
+	/* Ask about two weapon fighting if necessary and alt wielding */
+	for (i = 0; i < o_ptr->abilities; i++)
+	{
+		if ((o_ptr->skilltype[i] == S_MEL) && (o_ptr->abilitynum[i] == MEL_TWO_WEAPON) && object_known_p(o_ptr))
+		{
+			grants_two_weapon = TRUE;
+		}
+	}
+	if ((p_ptr->active_ability[S_MEL][MEL_TWO_WEAPON] || grants_two_weapon) && 
+	    ((o_ptr->tval == TV_SWORD) || (o_ptr->tval == TV_POLEARM) || (o_ptr->tval == TV_HAFTED) || (o_ptr->tval == TV_DIGGING)) &&
+	    alt_slot)
+	{
+		/* We can two weapon or quiver. Ask player*/
+		if (k_info[o_ptr->k_idx].flags3 & (TR3_THROWING))
+		{
+			if (get_check("Do you wish to wield it in your off-hand? "))
+			{
+				slot = INVEN_ARM;
+			}
+		}
+	}
 
 	/* Ask to quiver throwables */
 	into_quiver = (o_ptr->tval == TV_ARROW); /* and always quiver arrows */
-	if(k_info[o_ptr->k_idx].flags3 & (TR3_THROWING))
+	if(k_info[o_ptr->k_idx].flags3 & (TR3_THROWING) && alt_slot)
 	{
-		if(get_check("Quiver for throwing? "))
-		{
-			if(!inventory[INVEN_QUIVER2].k_idx && inventory[INVEN_QUIVER1].k_idx)
-				slot = INVEN_QUIVER2;
-			else
-				slot = INVEN_QUIVER1;
-			into_quiver = TRUE;
-		}
+		if(!inventory[INVEN_QUIVER2].k_idx && inventory[INVEN_QUIVER1].k_idx)
+			slot = INVEN_QUIVER2;
+		else
+			slot = INVEN_QUIVER1;
+		into_quiver = TRUE;
 	}
 
 	// Special cases for merging already quivered items
@@ -401,27 +439,6 @@ void do_cmd_wield(object_type *default_o_ptr, int default_item)
 		q = "Replace which quiver? ";
 		s = "Oops.";
 		if (!get_item(&slot, q, s, USE_EQUIP | USE_QUIVER)) return;
-	}
-	
-	// Ask about two weapon fighting if necessary
-	for (i = 0; i < o_ptr->abilities; i++)
-	{
-		if ((o_ptr->skilltype[i] == S_MEL) && (o_ptr->abilitynum[i] == MEL_TWO_WEAPON) && object_known_p(o_ptr))
-		{
-			grants_two_weapon = TRUE;
-		}
-	}
-	if ((p_ptr->active_ability[S_MEL][MEL_TWO_WEAPON] || grants_two_weapon) && 
-	    ((o_ptr->tval == TV_SWORD) || (o_ptr->tval == TV_POLEARM) || (o_ptr->tval == TV_HAFTED) || (o_ptr->tval == TV_DIGGING)) &&
-	    !into_quiver)
-	{
-		if (!(k_info[o_ptr->k_idx].flags3 & (TR3_TWO_HANDED)) && !(k_info[o_ptr->k_idx].flags3 & (TR3_HAND_AND_A_HALF)))
-		{
-			if (get_check("Do you wish to wield it in your off-hand? "))
-			{
-				slot = INVEN_ARM;
-			}
-		}
 	}
 	
 	/* Prevent wielding into a cursed slot (quivers exempt) */
