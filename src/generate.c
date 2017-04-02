@@ -2809,9 +2809,6 @@ static bool build_type6(int y0, int x0)
 	/* Message */
 	//if (cheat_room) msg_format("IR (%s).", v_name + v_ptr->name);
 
-	/* Cause a special feeling */
-	good_item_flag = TRUE;
-
 	return (TRUE);
 }
 
@@ -2902,7 +2899,7 @@ static bool build_type7(int y0, int x0)
 	if (cheat_room) msg_format("LV (%s).", v_name + v_ptr->name);
 
 	/* Cause a special feeling */
-	good_item_flag = TRUE;
+	feeling = MAX( 1, feeling);
 	
 	return (TRUE);
 }
@@ -3054,6 +3051,9 @@ static bool build_type8(int y0, int x0)
 	/* Message */
 	if (cheat_room) msg_format("GV (%s).", v_name + v_ptr->name);
 
+	/* Cause a special feeling */
+	feeling = MAX( 2, feeling);
+
 	/* Hack -- Mark vault grids with the CAVE_G_VAULT flag */
 	if (mark_g_vault(y0, x0, v_ptr->hgt, v_ptr->wid))
 	{
@@ -3101,9 +3101,6 @@ static bool build_type9(int y0, int x0)
 		return (FALSE);
 	}
 	
-	/* Cause a special feeling */
-	good_item_flag = TRUE;
-	
 	/* Hack -- Mark vault grids with the CAVE_G_VAULT flag */
 	if (mark_g_vault(y0, x0, v_ptr->hgt, v_ptr->wid))
 	{
@@ -3135,9 +3132,6 @@ static bool build_type10(int y0, int x0)
 	{
 		return (FALSE);
 	}
-	
-	/* Cause a special feeling */
-	good_item_flag = TRUE;
 	
 	/* Hack -- Mark vault grids with the CAVE_G_VAULT flag */
 	if (mark_g_vault(y0, x0, v_ptr->hgt, v_ptr->wid))
@@ -3784,9 +3778,6 @@ void generate_cave(void)
 
 		/* Reset the object generation level */
 		object_level = p_ptr->depth;
-		
-		/* Nothing special here yet */
-		good_item_flag = FALSE;
 
 		/* Nothing good here yet */
 		rating = 0;
@@ -3847,27 +3838,6 @@ void generate_cave(void)
 
 		else
 		{
-
-			/* Extract the feeling */
-			if (!feeling)
-			{
-				if (rating > 100) feeling = 2;
-				else if (rating > 80) feeling = 3;
-				else if (rating > 60) feeling = 4;
-				else if (rating > 40) feeling = 5;
-				else if (rating > 30) feeling = 6;
-				else if (rating > 20) feeling = 7;
-				else if (rating > 10) feeling = 8;
-				else if (rating > 0) feeling = 9;
-				else feeling = 10;
-
-				/* Hack -- Have a special feeling sometimes */
-				if (good_item_flag && !(PRESERVE_MODE)) feeling = 1;
-
-				/* Hack -- no feeling at the gates */
-				if (!p_ptr->depth) feeling = 0;
-			}
-
 			/* Prevent object over-flow */
 			if (o_max >= z_info->o_max)
 			{
@@ -3922,6 +3892,11 @@ void generate_cave(void)
 				// reset the time since the last forge when an interesting room with a forge is generated
 				p_ptr->forge_drought = 0;
 				p_ptr->forge_count++;
+				/* Good and great feelings for forges */
+				if (cave_feat[y][x] >= FEAT_FORGE_GOOD_HEAD)
+					feeling = MAX(2, feeling);
+				else
+					feeling = MAX(1, feeling);
 			}
 		}
 	}

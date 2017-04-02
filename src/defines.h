@@ -2457,7 +2457,7 @@
 #define STANCE_AGGRESSIVE		3
 
 
-#define LEV_THEME_HEAD				11
+#define LEV_THEME_HEAD				3
 #define LEV_THEME_CREEPING_COIN		0   /*creeping coins*/
 #define LEV_THEME_ORC				1   /*orc*/
 #define LEV_THEME_TROLL				2	/*troll*/

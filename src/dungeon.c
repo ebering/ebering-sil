@@ -959,6 +959,12 @@ static void process_command(void)
 			break;
 		}
 
+		/* Display level feeling */
+		case KTRL('F'):
+		{
+			do_cmd_feeling();
+			break;
+		}
 
 		/*** Standard "Movement" Commands ***/
 
@@ -1682,6 +1688,22 @@ static void process_player(void)
 			
 			// Reset the flag
 			stop_stealth_mode = FALSE;
+		}
+
+		/* Try to get the feeling if we have Lore Master and haven't been
+		 * yet found it. Perception check against staircasiness for
+		 * now... would like something more transparent */
+		if ((p_ptr->depth) && (p_ptr->depth != MORGOTH_DEPTH)
+				&& p_ptr->active_ability[S_PER][PER_LORE2] 
+				&& !do_feeling) 
+		{
+			/* We've been here long enough to see what's here */
+			if(skill_check(PLAYER,p_ptr->skill_use[S_PER],p_ptr->staircasiness / 100, NULL) > 0)
+			{
+				do_feeling = TRUE;
+				p_ptr->redraw |= (PR_DEPTH);
+				do_cmd_feeling();
+			}
 		}
 		
 		// Morgoth will announce a challenge if adjacent
@@ -2645,9 +2667,6 @@ static void dungeon(void)
 
 	/* Handle delayed death */
 	if (p_ptr->is_dead) return;
-
-	/* Announce (or repeat) the feeling */
-	//if ((p_ptr->depth) && (do_feeling)) do_cmd_feeling();
 
 	/* Announce a player ghost challenge. -LM- */
 	if (bones_selector) ghost_challenge();

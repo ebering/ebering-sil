@@ -82,7 +82,7 @@ char summon_kin_type;		/* Hack -- See summon_specific() */
 s32b turn;				/* Current game turn */
 s32b playerturn;		/* Current player turn */
 
-bool do_feeling;			/* Hack -- Level feeling counter */
+bool do_feeling;			/* Aware of feeling */
 
 bool use_sound;			/* The "sound" mode is enabled */
 int use_graphics;		/* The "graphics" mode is enabled */

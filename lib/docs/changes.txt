@@ -19,6 +19,12 @@
 	- Horn of Blasting now creates an earthquake in power proportional to
 	  the player's will score, like the staff.
 
+- abilities
+	- Lore-Master does not identify all items
+	- Instead it (after a perception check against staircasiness) reveals a
+	  level feeling. Either valuable (forges and lesser vaults) or great
+	  importance (enchanted forges and greater vaults).
+
 - interface
 	- Split wield into two commands. 'w' works as the old wield, but always
 	  goes into the default slot. 'W' wields an item into an alternate

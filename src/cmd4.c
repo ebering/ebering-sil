@@ -8707,31 +8707,35 @@ void do_cmd_version(void)
  */
 static cptr do_cmd_feeling_text[LEV_THEME_HEAD] =
 {
-	"Looks like any other level.",
-	"You feel there is something special about this level.",
-	"You have a superb feeling about this level.",
-	"You have an excellent feeling...",
-	"You have a very good feeling...",
-	"You have a good feeling...",
-	"You feel strangely lucky...",
-	"You feel your luck is turning...",
-	"You like the look of this place...",
-	"This level can't be all bad...",
-	"What a boring place..."
+	"This level is unremarkable.",
+	"Floor carvings suggest something valuable here.",
+	"Echoes of great importance reach your ears.",
 };
 
 
 /*
- * Note that "feeling" is set to zero unless some time has passed.
- * Note that this is done when the level is GENERATED, not entered.
+ * Feeling is set at level generation. do_feeling is set after the player
+ * passes a perception check in process_player. Until that gets set no feeling
+ * generates. Special feelings for surface and morgy.
  */
 void do_cmd_feeling(void)
 {
+	/* Only for Lore-Masters, or if the feeling has already been revealed */
+	if (!do_feeling && !p_ptr->active_ability[S_PER][PER_LORE2])
+	{
+		msg_print("You need the ability 'Lore-Master' to use this command.");
+		return;
+	}
 
-	/* No useful feeling on the surface */
+	/* Special feelings for special levels */
 	if (!p_ptr->depth)
 	{
 		msg_print("You stand once again upon the surface. Freedom awaits.");
+		return;
+	}
+	else if (p_ptr->depth == MORGOTH_DEPTH)
+	{
+		msg_print("You feel that Morgoth's servants are reluctant to attack before he delivers judgement.");
 		return;
 	}
 
@@ -8745,8 +8749,6 @@ void do_cmd_feeling(void)
 	/* Display the feeling */
 	else msg_print(do_cmd_feeling_text[feeling]);
 }
-
-
 
 /*
  * Array of feeling strings

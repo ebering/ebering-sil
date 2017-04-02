@@ -538,19 +538,10 @@ static void prt_depth(void)
 	}
 
 	/* Get color of level based on feeling  -JSV- */
-	if ((p_ptr->depth) && (do_feeling))
+	if ((p_ptr->depth) && do_feeling)
 	{
-		if (feeling ==  1) attr = TERM_VIOLET;
+		if (feeling ==  1) attr = TERM_YELLOW;
 		else if (feeling ==  2) attr = TERM_RED;
-		else if (feeling ==  3) attr = TERM_L_RED;
-		else if (feeling ==  4) attr = TERM_ORANGE;
-		else if (feeling ==  5) attr = TERM_ORANGE;
-		else if (feeling ==  6) attr = TERM_YELLOW;
-		else if (feeling ==  7) attr = TERM_YELLOW;
-		else if (feeling ==  8) attr = TERM_WHITE;
-		else if (feeling ==  9) attr = TERM_WHITE;
-		else if (feeling == 10) attr = TERM_L_WHITE;
-		else if (feeling >= LEV_THEME_HEAD) attr = TERM_BLUE;
 	}
 
 	/* Right-Adjust the "depth", and clear old values */
@@ -2877,11 +2868,9 @@ void notice_stuff(void)
  */
 void update_lore_aux(object_type *o_ptr)
 {
-	// Identify seen items with Lore-Master (but not chests).
 	// Artefacts and potions of Miruvor/Orcish Liquor are identified on sight
 	if (!object_known_p(o_ptr)
-            && (p_ptr->active_ability[S_PER][PER_LORE2]
-		|| o_ptr->name1
+            && (o_ptr->name1
 		|| o_ptr->tval == TV_POTION
 	           && (o_ptr->sval == SV_POTION_MIRUVOR
 		       || o_ptr->sval == SV_POTION_ORCISH_LIQUOR))
