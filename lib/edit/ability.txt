@@ -128,8 +128,9 @@ T:31:0:99  # Gloves
 N:10:Two Weapon Fighting
 I:0:10:11
 P:0/1:2/2
-D:Allows you to wield a one-handed weapon in your off-hand for an extra attack
-D: (calculated as if you had 3 points less strength and dexterity).
+D:Allows you to wield a one-handed weapon in your off-hand (with 'W')
+D: for an extra attack (calculated as if you had 3 points less 
+D: strength and dexterity).
 T:21:0:99  # Hafted
 T:22:0:99  # Polearms
 T:23:0:99  # Swords
