@@ -19,6 +19,12 @@
 	- Horn of Blasting now creates an earthquake in power proportional to
 	  the player's will score, like the staff.
 
+- interface
+	- Split wield into two commands. 'w' works as the old wield, but always
+	  goes into the default slot. 'W' wields an item into an alternate
+	  slot, if applicable. These are the off-hand for two weapon fighting
+	  and the quiver for throwable items.
+
 - character dumps
 	- List starting skills in the notes
 	- Note reaching multiples of 5 in a skill thereafter.
