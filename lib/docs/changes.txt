@@ -21,9 +21,10 @@
 
 - abilities
 	- Lore-Master does not identify all items
-	- Instead it (after a perception check against staircasiness) reveals a
-	  level feeling. Either valuable (forges and lesser vaults) or great
-	  importance (enchanted forges and greater vaults).
+		- Instead it (after a perception check against staircasiness) reveals a
+		  level feeling. Either valuable (forges and lesser vaults) or great
+		  importance (enchanted forges and greater vaults).
+	- Focused Attack and Concentration give bonuses to Sil cutting. 
 
 - interface
 	- Split wield into two commands. 'w' works as the old wield, but always

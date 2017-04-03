@@ -967,6 +967,8 @@ void prise_silmaril(void)
 	
 	int mds = p_ptr->mds;
 	int attack_mod = p_ptr->skill_use[S_MEL];
+	int total_attack_mod = 0;
+	
 
 	char o_name[80];
 
@@ -1017,9 +1019,15 @@ void prise_silmaril(void)
 		// undo the dexterity adjustment to the attack
 		attack_mod += 3;
 	}
+
+	total_attack_mod = attack_mod + focused_attack_bonus()
+		+ concentration_bonus(p_ptr->py,p_ptr->px);
 	
 	/* Test for hit */
-	hit_result = hit_roll(attack_mod, 0, PLAYER, NULL, TRUE);
+	hit_result = hit_roll(total_attack_mod, 0, PLAYER, NULL, TRUE);
+
+	/* Count this as a hit for stealth and concentration purposes */
+	player_attacked = TRUE;
 	
 	/* Make some noise */
 	stealth_score -= noise;
