@@ -2460,6 +2460,10 @@ static void process_player(void)
 		p_ptr->consecutive_attacks = 0;
 		p_ptr->last_attack_m_idx = 0;
 	}
+	else
+	{
+		p_ptr->consecutive_attacks++;
+	}
 	
 	// boots of radiance
 	if (inventory[INVEN_FEET].k_idx)

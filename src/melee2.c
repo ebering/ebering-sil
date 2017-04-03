@@ -5506,9 +5506,6 @@ void monster_perception(bool player_centered, bool main_roll, int difficulty)
 			combat_noise_bonus += 2;
 			combat_sight_bonus += 2;
 			player_attacked = FALSE;
-
-			// keep track of this for the ability 'Concentration'
-			p_ptr->consecutive_attacks++;
 		}
 		if (attacked_player)
 		{
