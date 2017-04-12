@@ -18,6 +18,13 @@
 - items
 	- Horn of Blasting now creates an earthquake in power proportional to
 	  the player's will score, like the staff.
+	- the changes in traps and doors apply to chests also.
+
+- traps and doors
+	- As a result of a bug fix these are now easier to detect, disarm, and
+	  open.
+	- And also harder in the edge case where the target square is dark but
+	  the player's square is lit by something other than their torch.
 
 - abilities
 	- Lore-Master does not identify all items
@@ -40,6 +47,7 @@
 	- Correctly apply monster protection to earthquakes.
 	- Correctly give chanelling bonus to staff of earthquakes.
 	- Fix Gorthaur's song to summon the correct monster.
+	- (controversial, see old thread) Treat the player's own grid as seen.
 
 - mpa-sil 1.3 ------------------------------------------------------------------------------------------
 
