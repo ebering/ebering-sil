@@ -2850,7 +2850,7 @@ void update_view(void)
 	info = fast_cave_info[g];
 
 	/* Assume viewable */
-	info |= (CAVE_VIEW | CAVE_FIRE);
+	info |= (CAVE_VIEW | CAVE_FIRE | CAVE_SEEN);
 
 	/* Save cave info */
 	fast_cave_info[g] = info;
