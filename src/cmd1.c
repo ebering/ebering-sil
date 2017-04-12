@@ -2258,7 +2258,7 @@ void search_square(int y, int x, int dist, int searching)
 	{
 
 		// give up if the square is unseen and not adjacent
-		if ( (dist > 1) && !(cave_info[y][x] & (CAVE_SEEN)) )  return;
+		if ( (dist > 1) && !player_can_see_bold(y,x) )  return;
 
 		// no bonus for searching on your own square
 		if (dist < 1)
@@ -2293,7 +2293,7 @@ void search_square(int y, int x, int dist, int searching)
 		}
 		
 		// Give various penalties
-		if (p_ptr->blind || no_light() || p_ptr->image)     difficulty +=  5;   // can't see properly
+		if (!player_can_see_bold(y,x) || p_ptr->image)     difficulty +=  5;   // can't see properly
 		if (p_ptr->confused)								difficulty +=  5;   // confused
 		if (dist == 2)										difficulty +=  5;   // distance 2
 		if (dist == 3)										difficulty += 10;   // distance 3

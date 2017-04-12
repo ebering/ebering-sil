@@ -279,7 +279,6 @@ extern int distance(int y1, int x1, int y2, int x2);
 extern int distance_squared(int y1, int x1, int y2, int x2);
 extern bool los(int y1, int x1, int y2, int x2);
 extern void random_unseen_floor(int *ry, int *rx);
-extern bool no_light(void);
 extern bool seen_by_keen_senses(int y, int x);
 extern bool cave_valid_bold(int y, int x);
 extern bool feat_supports_lighting(int feat);

@@ -331,16 +331,6 @@ void random_unseen_floor(int *ry, int *rx)
 	return;
 }
 
-
-/*
- * Returns true if the player's grid is dark
- */
-bool no_light(void)
-{
-	return (!player_can_see_bold(p_ptr->py, p_ptr->px));
-}
-
-
 /*
  *  Determines whether a square is viewable (only) by the keen senses ability.
  *
