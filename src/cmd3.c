@@ -33,6 +33,15 @@ static bool item_tester_hook_alt(const object_type *o_ptr)
 {
 	int i;
 	bool grants_two_weapon = FALSE;
+	bool can_dual_wield = FALSE;
+
+	if (p_ptr->active_ability[S_MEL][MEL_TWO_WEAPON])
+	{
+		can_dual_wield = ((o_ptr->tval == TV_SWORD) || (o_ptr->tval == TV_POLEARM)
+				   || (o_ptr->tval == TV_HAFTED) || (o_ptr->tval == TV_DIGGING))
+				 && !(k_info[o_ptr->k_idx].flags3 & (TR3_TWO_HANDED)) 
+				 && !(k_info[o_ptr->k_idx].flags3 & (TR3_HAND_AND_A_HALF));
+	}
 
 	for (i = 0; i < o_ptr->abilities; i++)
 	{
@@ -42,7 +51,7 @@ static bool item_tester_hook_alt(const object_type *o_ptr)
 		}
 	}
 
-	return grants_two_weapon || (k_info[o_ptr->k_idx].flags3 & TR3_THROWING);
+	return can_dual_wield || grants_two_weapon || (k_info[o_ptr->k_idx].flags3 & TR3_THROWING);
 }
 
 /*
@@ -320,7 +329,7 @@ void do_cmd_wield(object_type *default_o_ptr, int default_item, bool alt_slot)
 	
 	char o_name[80];
 
-	bool into_quiver = FALSE;
+	bool into_quiver = alt_slot;
 	
 	bool combine = FALSE;
 	
@@ -397,25 +406,24 @@ void do_cmd_wield(object_type *default_o_ptr, int default_item, bool alt_slot)
 	    ((o_ptr->tval == TV_SWORD) || (o_ptr->tval == TV_POLEARM) || (o_ptr->tval == TV_HAFTED) || (o_ptr->tval == TV_DIGGING)) &&
 	    alt_slot)
 	{
+		slot = INVEN_ARM;
 		/* We can two weapon or quiver. Ask player*/
 		if (k_info[o_ptr->k_idx].flags3 & (TR3_THROWING))
 		{
 			if (get_check("Do you wish to wield it in your off-hand? "))
 			{
-				slot = INVEN_ARM;
+				into_quiver = FALSE;
 			}
 		}
 	}
 
-	/* Ask to quiver throwables */
-	into_quiver = (o_ptr->tval == TV_ARROW); /* and always quiver arrows */
-	if(k_info[o_ptr->k_idx].flags3 & (TR3_THROWING) && alt_slot)
+	into_quiver = into_quiver || (o_ptr->tval == TV_ARROW); /* always quiver arrows */
+	if(into_quiver && alt_slot)
 	{
 		if(!inventory[INVEN_QUIVER2].k_idx && inventory[INVEN_QUIVER1].k_idx)
 			slot = INVEN_QUIVER2;
 		else
 			slot = INVEN_QUIVER1;
-		into_quiver = TRUE;
 	}
 
 	// Special cases for merging already quivered items
